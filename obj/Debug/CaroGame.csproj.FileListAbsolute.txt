@@ -1,0 +1,15 @@
+c:\users\phambahieu\documents\visual studio 2015\Projects\CaroGame\CaroGame\bin\Debug\CaroGame.exe.config
+c:\users\phambahieu\documents\visual studio 2015\Projects\CaroGame\CaroGame\bin\Debug\CaroGame.exe
+c:\users\phambahieu\documents\visual studio 2015\Projects\CaroGame\CaroGame\bin\Debug\CaroGame.pdb
+c:\users\phambahieu\documents\visual studio 2015\Projects\CaroGame\CaroGame\obj\Debug\CaroGame.Form1.resources
+c:\users\phambahieu\documents\visual studio 2015\Projects\CaroGame\CaroGame\obj\Debug\CaroGame.Properties.Resources.resources
+c:\users\phambahieu\documents\visual studio 2015\Projects\CaroGame\CaroGame\obj\Debug\CaroGame.csproj.GenerateResource.Cache
+c:\users\phambahieu\documents\visual studio 2015\Projects\CaroGame\CaroGame\obj\Debug\CaroGame.exe
+c:\users\phambahieu\documents\visual studio 2015\Projects\CaroGame\CaroGame\obj\Debug\CaroGame.pdb
+C:\Users\PhamBaHieu\documents\visual studio 2015\Projects\CaroGame\CaroGame\obj\Debug\CaroGame.frmLogin.resources
+C:\Users\PhamBaHieu\Documents\Visual Studio 2015\Projects\CaroGame\CaroGame\bin\Debug\CaroGame.exe.manifest
+C:\Users\PhamBaHieu\Documents\Visual Studio 2015\Projects\CaroGame\CaroGame\bin\Debug\CaroGame.application
+C:\Users\PhamBaHieu\Documents\Visual Studio 2015\Projects\CaroGame\CaroGame\obj\Debug\CaroGame.exe.manifest
+C:\Users\PhamBaHieu\Documents\Visual Studio 2015\Projects\CaroGame\CaroGame\obj\Debug\CaroGame.application
+C:\Users\PhamBaHieu\documents\visual studio 2015\Projects\CaroGame\CaroGame\obj\Debug\CaroGame.csprojResolveAssemblyReference.cache
+C:\Users\PhamBaHieu\documents\visual studio 2015\Projects\CaroGame\CaroGame\obj\Debug\CaroGame.EpicWinning.resources
