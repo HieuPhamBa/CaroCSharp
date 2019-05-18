@@ -29,31 +29,18 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EpicWinning));
-            this.panel1 = new System.Windows.Forms.Panel();
             this.btnQuit = new System.Windows.Forms.Button();
             this.btnRelay = new System.Windows.Forms.Button();
-            this.panel1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // panel1
-            // 
-            this.panel1.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            this.panel1.Controls.Add(this.btnQuit);
-            this.panel1.Controls.Add(this.btnRelay);
-            this.panel1.Location = new System.Drawing.Point(0, 214);
-            this.panel1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(406, 67);
-            this.panel1.TabIndex = 0;
             // 
             // btnQuit
             // 
-            this.btnQuit.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.btnQuit.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.btnQuit.Font = new System.Drawing.Font("Mistral", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnQuit.Location = new System.Drawing.Point(261, 5);
-            this.btnQuit.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.btnQuit.Location = new System.Drawing.Point(337, 244);
+            this.btnQuit.Margin = new System.Windows.Forms.Padding(5);
             this.btnQuit.Name = "btnQuit";
-            this.btnQuit.Size = new System.Drawing.Size(144, 42);
+            this.btnQuit.Size = new System.Drawing.Size(78, 27);
             this.btnQuit.TabIndex = 1;
             this.btnQuit.Text = "Quit";
             this.btnQuit.UseVisualStyleBackColor = false;
@@ -61,12 +48,12 @@
             // 
             // btnRelay
             // 
-            this.btnRelay.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.btnRelay.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.btnRelay.Font = new System.Drawing.Font("Mistral", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnRelay.Location = new System.Drawing.Point(0, 6);
-            this.btnRelay.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.btnRelay.Location = new System.Drawing.Point(1, 245);
+            this.btnRelay.Margin = new System.Windows.Forms.Padding(5);
             this.btnRelay.Name = "btnRelay";
-            this.btnRelay.Size = new System.Drawing.Size(139, 42);
+            this.btnRelay.Size = new System.Drawing.Size(73, 27);
             this.btnRelay.TabIndex = 0;
             this.btnRelay.Text = "Replay";
             this.btnRelay.UseVisualStyleBackColor = false;
@@ -76,22 +63,22 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
-            this.ClientSize = new System.Drawing.Size(402, 271);
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.ClientSize = new System.Drawing.Size(416, 277);
             this.ControlBox = false;
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.btnRelay);
+            this.Controls.Add(this.btnQuit);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.Margin = new System.Windows.Forms.Padding(5);
             this.Name = "EpicWinning";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button btnRelay;
         private System.Windows.Forms.Button btnQuit;
     }

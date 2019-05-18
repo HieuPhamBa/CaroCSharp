@@ -106,8 +106,15 @@
     <Compile Include="PlayerInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SocketConection.cs" />
+    <Compile Include="SocketData.cs" />
+    <Compile Include="SocketManager.cs" />
     <Compile Include="SoundGame.cs" />
+    <Compile Include="ucMenu.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucMenu.Designer.cs">
+      <DependentUpon>ucMenu.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="EpicWinning.resx">
       <DependentUpon>EpicWinning.cs</DependentUpon>
     </EmbeddedResource>
@@ -127,6 +134,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="ucMenu.resx">
+      <DependentUpon>ucMenu.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="CaroGame_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

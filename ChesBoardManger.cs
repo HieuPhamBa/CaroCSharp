@@ -12,6 +12,7 @@ namespace CaroGame
     {
         #region properties
         private SoundGame sound = new SoundGame();
+        ConsRegion cons = new ConsRegion();
         private string namePlayer = "";
         public string NamePlayer
         {
@@ -19,8 +20,9 @@ namespace CaroGame
             get { return namePlayer; }
         }
         private Point[] winMark;
-        private event EventHandler playerMarked, endGameEvent;
-        public event EventHandler PlayerMarked
+        private event EventHandler<ButtonClickedEvent> playerMarked;
+        private event EventHandler endGameEvent;
+        public event EventHandler<ButtonClickedEvent> PlayerMarked
         {
             add
             {
@@ -63,6 +65,9 @@ namespace CaroGame
         }
         
         private Stack<PlayerInfo> playTimeLine;
+        private int[] attackCore = { 0, 4, 25, 246, 7300, 6561, 59049 };
+        private int[] defendCore = { 0, 4, 25, 246, 7300, 6561, 59049 };
+
         #endregion
 
         #region initalize
@@ -132,17 +137,36 @@ namespace CaroGame
             changeIcon(btn);
             playTimeLine.Push(new PlayerInfo(this.postion, getPoint(btn)));
             changePlayer();
-            if (playerMarked != null)
-                playerMarked(this, new EventArgs());
+            
             if (isEndGame(btn))
             {
                 endGame();
             }
-               
+            if (playerMarked != null)
+                playerMarked(this, new ButtonClickedEvent(getPoint(btn)));
 
         }
 
+        public void otherPlayClicked(Point point)
+        {
+            Button btn = matrixButton[point.Y][point.X];
+            if (btn.BackgroundImage != null)
+            {
+                sound.GoWrong.Play();
+                return;
+            }
+            sound.ClickSound.Play();
+            NamePlayer = this.txtNamePlayer.Text;
+            changeIcon(btn);
+            playTimeLine.Push(new PlayerInfo(this.postion, getPoint(btn)));
+            changePlayer();
+            if (isEndGame(btn))
+            {
+                endGame();
+            }
         
+        }
+
         private void changeIcon(Button btn)
         {
             
@@ -162,9 +186,9 @@ namespace CaroGame
         }
         private Point getPoint(Button btn)
         {
-            int pointX = Convert.ToInt32(btn.Tag);
-            int pointY = matrixButton[pointX].IndexOf(btn);
-            Point point = new Point(pointY, pointX);
+            int pointY = Convert.ToInt32(btn.Tag);
+            int pointX = matrixButton[pointY].IndexOf(btn);
+            Point point = new Point(pointX, pointY);
             return point;
         }
         private bool isEndGame(Button btn)
@@ -189,7 +213,7 @@ namespace CaroGame
             int i, countRight, countLeft;
             countLeft = countRight = 0;
 
-            for( i = point.X; i >= 0; i--)
+            for( i = point.X; i > 0; i--)
             {
                 if (matrixButton[point.Y][i].BackgroundImage == btn.BackgroundImage)
                 {
@@ -222,7 +246,7 @@ namespace CaroGame
             int i, countBottom, countTop;
             countBottom = countTop = 0;
 
-            for (i = point.Y; i >= 0; i--)
+            for (i = point.Y; i > 0; i--)
             {
                 if (matrixButton[i][point.X].BackgroundImage == btn.BackgroundImage)
                 {
@@ -247,9 +271,7 @@ namespace CaroGame
 
             return countBottom + countTop >= 5;
 
-        }
-
-       
+        }       
         private bool isEndSubDiagonal(Button btn)
         {
             Point point = getPoint(btn);
@@ -322,7 +344,6 @@ namespace CaroGame
 
             return countBottom + countTop >= 5;
         }
-
         public bool undo()
         {          
             if (playTimeLine.Count <= 0)
@@ -335,6 +356,476 @@ namespace CaroGame
             changePlayer();
             return true;
         }
+
         #endregion
+        #region AI
+        private int coutMarkedAi = 0;
+        private Button oldBtn = new Button();
+        public Point getAiPoint()
+        {
+            //Point pointAi = new Point();
+            Button btn = new Button();
+            btn = findPoint();
+            return getPoint(btn);
+           
+        }
+        private int getCore(Button btn)
+        {
+            int sum, attackCore1, defendCore1;
+            attackCore1 = attackHorizon(btn) + attackPrimeDiagonal(btn) + attackSubDiagonal(btn) + attackVatical(btn);
+            defendCore1 = defendHorizon(btn) + defendPrimeDiagonal(btn) + defendSubDiagonal(btn) + defendVatical(btn);
+            
+            sum = defendCore1 > attackCore1?defendCore1:attackCore1;
+            //MessageBox.Show(sum + "");
+            return sum;
+        }
+       
+        private Button findPoint()
+        {
+            Button maxbtn = new Button();
+            int coreBtn;
+            Button btn;
+            Point point = getPoint(oldBtn);
+            int maxCore = 0;
+            for (int i = 0; i < ConsRegion.BOARD_HEIGHT; i++)
+            {
+
+                for (int j = 0; j <  ConsRegion.BOARD_WITDH ; j++)
+                {
+                    btn = matrixButton[i][j];
+                    if (btn.BackgroundImage == null)
+                    {
+                        coreBtn = getCore(matrixButton[i][j]);
+                      //  MessageBox.Show(maxCore + "");
+                        if (coreBtn >= maxCore)
+                        {
+                           
+                            maxCore = coreBtn;
+                            maxbtn = matrixButton[i][j];
+                        }
+                    } 
+                }
+            }
+            return maxbtn;
+        }
+
+        private int attackHorizon(Button btn)
+        {
+            int sum;
+            sum = 0;
+            Point point = getPoint(btn);
+            int  enemyUnit, aiUnit;
+            enemyUnit = aiUnit = 0;
+
+            for (int i = point.Y; i >= 0; i--)
+            {
+                if (matrixButton[i][point.X].BackgroundImage == arrPlayer[0].IconMark)
+                {
+                    enemyUnit++;
+                    break;
+                }
+                else if(matrixButton[i][point.X].BackgroundImage == arrPlayer[1].IconMark)
+                {
+                    aiUnit++;
+                    break;
+                }
+                else
+                    break;
+            }
+
+            for (int i = point.Y + 1; i < ConsRegion.BOARD_HEIGHT; i++)
+            {
+                if (matrixButton[i][point.X].BackgroundImage == arrPlayer[0].IconMark)
+                {
+                    enemyUnit++;
+                    break;
+                }
+                else if (matrixButton[i][point.X].BackgroundImage == arrPlayer[1].IconMark)
+                {
+                    aiUnit++;
+                   
+                }
+                else
+                    break;
+            }
+
+            if (enemyUnit == 2)
+                return 0;
+            sum -= defendCore[enemyUnit+1];
+            sum += attackCore[aiUnit];
+            return sum;
+        }
+        private int attackVatical(Button btn)
+        {
+            int sum;
+            Point point = getPoint(btn);
+            int i, enemyUnit, aiUnit;
+            enemyUnit = aiUnit = sum = 0;
+
+            for (i = point.X; i >= 0; i--)
+            {
+                if (matrixButton[point.Y][i].BackgroundImage == arrPlayer[0].IconMark)
+                {
+                    enemyUnit++;
+                    break;
+                }
+                else if (matrixButton[point.Y][i].BackgroundImage == arrPlayer[1].IconMark)
+                {
+                    aiUnit++;
+                    
+                }
+                else
+                    break;
+            }
+
+            for (i = point.X + 1; i < ConsRegion.BOARD_WITDH; i++)
+            {
+                if (matrixButton[point.Y][i].BackgroundImage == arrPlayer[0].IconMark)
+                {
+                    enemyUnit++;
+                    break;
+                }
+                else if (matrixButton[point.Y][i].BackgroundImage == arrPlayer[1].IconMark)
+                {
+                    aiUnit++;
+                   
+                }
+                else
+                    break;
+            }
+
+            if (enemyUnit == 2)
+                return 0;
+            if (enemyUnit == 2)
+                return 0;
+            sum -= defendCore[enemyUnit+1];
+            sum += attackCore[aiUnit];
+            return sum;
+
+        }
+        private int attackSubDiagonal(Button btn)
+        {
+            int sum;
+            Point point = getPoint(btn);
+            int  enemyUnit, aiUnit;
+            enemyUnit = aiUnit = sum = 0;
+
+            for (int i = 0; i <= point.X; i++)
+            {
+                if (point.X + i >= ConsRegion.BOARD_WITDH || point.Y + i >= ConsRegion.BOARD_HEIGHT)
+                    break;
+
+                if (matrixButton[point.Y + i][point.X + i].BackgroundImage == arrPlayer[0].IconMark)
+                {
+                    enemyUnit++;
+                    break;
+                }
+                else if (matrixButton[point.Y + i][point.X + i].BackgroundImage == arrPlayer[1].IconMark)
+                {
+                    aiUnit++;
+                   
+                }
+                else
+                    break;
+            }
+            for (int i = 1; i <= ConsRegion.BOARD_WITDH - point.X; i++)
+            {
+                if (point.Y - i < 0 || point.X - i < 0)
+                    break;
+
+                if (point.X + i >= ConsRegion.BOARD_WITDH || point.Y + i >= ConsRegion.BOARD_HEIGHT)
+                    break;
+
+                if (matrixButton[point.Y - i][point.X - i].BackgroundImage == arrPlayer[0].IconMark)
+                {
+                    enemyUnit++;
+                    break;
+                }
+                else if (matrixButton[point.Y - i][point.X - i].BackgroundImage == arrPlayer[1].IconMark)
+                {
+                    aiUnit++;
+                    
+                }
+                else
+                    break;
+            }
+            //MessageBox.Show(countBottom + "v" + countTop);
+
+            if (enemyUnit == 2)
+                return 0;
+           
+            sum -= defendCore[enemyUnit+1];
+            sum += attackCore[aiUnit];
+            return sum;
+
+        }
+        private int attackPrimeDiagonal(Button btn)
+        {
+            int sum;
+            Point point = getPoint(btn);
+            int enemyUnit, aiUnit, i;
+            enemyUnit = aiUnit = sum = 0;
+
+            for (i = 0; i <= point.X; i++)
+            {
+                if (point.X + i >= ConsRegion.BOARD_WITDH || point.Y - i < 0)
+                    break;
+
+                if (matrixButton[point.Y - i][point.X + i].BackgroundImage == arrPlayer[0].IconMark)
+                {
+                    enemyUnit++;
+                    break;
+                }
+                else if (matrixButton[point.Y - i][point.X + i].BackgroundImage == arrPlayer[1].IconMark)
+                {
+                    aiUnit++;
+                   
+                }
+                else
+                    break;
+            }
+
+            for (i = 1; i <= ConsRegion.BOARD_WITDH - point.X; i++)
+            {
+                if (point.X - i <= 0 || point.Y + i >=ConsRegion.BOARD_HEIGHT)
+                    break;
+
+                if (matrixButton[point.Y + i][point.X - i].BackgroundImage == arrPlayer[0].IconMark)
+                {
+                    enemyUnit++;
+                    break;
+                }
+                else if (matrixButton[point.Y + i][point.X - i].BackgroundImage == arrPlayer[1].IconMark)
+                {
+                    aiUnit++;
+                   
+                }
+                else
+                    break;
+            }
+
+            if (enemyUnit == 2)
+                return 0;
+            sum -= defendCore[enemyUnit+1];
+            sum += attackCore[aiUnit];
+            return sum;
+        }
+
+        private int defendHorizon(Button btn)
+        {
+            int sum;
+            sum = 0;
+            Point point = getPoint(btn);
+            int i, enemyUnit, aiUnit;
+            enemyUnit = aiUnit = 0;
+
+            for (i = point.Y; i >= 0; i--)
+            {
+                if (matrixButton[i][point.X].BackgroundImage == arrPlayer[0].IconMark)
+                {
+                    enemyUnit++;
+                   
+                }
+                else if (matrixButton[i][point.X].BackgroundImage == arrPlayer[1].IconMark)
+                {
+                    aiUnit++;
+                    break;
+                }
+                else
+                    break;
+            }
+
+            for (i = point.Y + 1; i < ConsRegion.BOARD_HEIGHT; i++)
+            {
+                if (matrixButton[i][point.X].BackgroundImage == arrPlayer[0].IconMark)
+                {
+                    enemyUnit++;
+                   
+                }
+                else if (matrixButton[i][point.X].BackgroundImage == arrPlayer[1].IconMark)
+                {
+                    aiUnit++;
+                    break;
+                }
+                else
+                    break;
+            }
+
+            if (aiUnit == 2)
+                return 0;
+            //sum -= attackCore[aiUnit];
+            sum += defendCore[enemyUnit];
+            return sum;
+
+        }
+        private int defendVatical(Button btn)
+        {
+            int sum;
+            Point point = getPoint(btn);
+            int i, enemyUnit, aiUnit;
+            enemyUnit = aiUnit = sum = 0;
+
+            for (i = point.X; i >= 0; i--)
+            {
+                if (matrixButton[point.Y][i].BackgroundImage == arrPlayer[0].IconMark)
+                {
+                    enemyUnit++;
+                   
+                }
+                else if (matrixButton[point.Y][i].BackgroundImage == arrPlayer[1].IconMark)
+                {
+                    aiUnit++;
+                    break;
+                }
+                else
+                    break;
+            }
+
+            for (i = point.X + 1; i < ConsRegion.BOARD_HEIGHT; i++)
+            {
+                if (matrixButton[point.Y][i].BackgroundImage == arrPlayer[0].IconMark)
+                {
+                    enemyUnit++;
+                   
+                }
+                else if (matrixButton[point.Y][i].BackgroundImage == arrPlayer[1].IconMark)
+                {
+                    aiUnit++;
+                    break;
+                }
+                else
+                    break;
+            }
+            if (aiUnit == 2)
+                return 0;
+            //sum -= attackCore[aiUnit];
+            sum += defendCore[enemyUnit];
+            return sum;
+
+
+        }
+        private int defendSubDiagonal(Button btn)
+        {
+            int sum;
+            Point point = getPoint(btn);
+            int enemyUnit, aiUnit;
+            enemyUnit = aiUnit = sum = 0;
+
+            for (int i = 0; i <= point.X; i++)
+            {
+                if (point.X + i >= ConsRegion.BOARD_WITDH || point.Y + i >= ConsRegion.BOARD_HEIGHT)
+                    break;
+
+                if (matrixButton[point.Y + i][point.X + i].BackgroundImage == arrPlayer[0].IconMark)
+                {
+                    enemyUnit++;
+                    
+                }
+                else if (matrixButton[point.Y + i][point.X + i].BackgroundImage == arrPlayer[1].IconMark)
+                {
+                    aiUnit++;
+                    break;
+                }
+                else
+                    break;
+            }
+            for (int i = 1; i <= ConsRegion.BOARD_WITDH - point.X; i++)
+            {
+                if (point.Y - i < 0 || point.X - i < 0)
+                    break;
+
+                if (point.X + i >= ConsRegion.BOARD_WITDH || point.Y + i >= ConsRegion.BOARD_HEIGHT)
+                    break;
+
+                if (matrixButton[point.Y - i][point.X - i].BackgroundImage == arrPlayer[0].IconMark)
+                {
+                    enemyUnit++;
+                    
+                }
+                else if (matrixButton[point.Y - i][point.X - i].BackgroundImage == arrPlayer[1].IconMark)
+                {
+                    aiUnit++;
+                    break;
+                }
+                else
+                    break;
+            }
+            //MessageBox.Show(countBottom + "v" + countTop);
+
+            if (aiUnit == 2)
+                return 0;
+            //sum -= attackCore[aiUnit];
+            sum += defendCore[enemyUnit];
+            return sum;
+
+        }
+        private int defendPrimeDiagonal(Button btn)
+        {
+            int sum;
+            Point point = getPoint(btn);
+            int enemyUnit, aiUnit, i;
+            enemyUnit = aiUnit = sum = 0;
+
+            for (i = 0; i <= point.X; i++)
+            {
+                if (point.X + i >= ConsRegion.BOARD_WITDH || point.Y - i < 0)
+                    break;
+
+                if (matrixButton[point.Y - i][point.X + i].BackgroundImage == arrPlayer[0].IconMark)
+                {
+                    enemyUnit++;
+                   
+                }
+                else if (matrixButton[point.Y - i][point.X + i].BackgroundImage == arrPlayer[1].IconMark)
+                {
+                    aiUnit++;
+                    break;
+                }
+                else
+                    break;
+            }
+
+            for (i = 1; i <= ConsRegion.BOARD_WITDH - point.X; i++)
+            {
+                if (point.X - i < 0 || point.Y + i >= ConsRegion.BOARD_HEIGHT)
+                    break;
+
+                if (matrixButton[point.Y + i][point.X - i].BackgroundImage == arrPlayer[0].IconMark)
+                {
+                    enemyUnit++;
+                   
+                }
+                else if (matrixButton[point.Y + i][point.X - i].BackgroundImage == arrPlayer[1].IconMark)
+                {
+                    aiUnit++;
+                    break;
+                }
+                else
+                    break;
+            }
+            
+            if (aiUnit == 2)
+                return 0;
+           // sum -= attackCore[aiUnit];
+            sum += defendCore[enemyUnit];
+            return sum;
+        }
+        #endregion
+    }
+
+    public class ButtonClickedEvent : EventArgs
+    {
+        private Point point;
+        public Point clickedPoint
+        {
+            set { point = value; }
+            get { return point; }
+        }
+
+        public ButtonClickedEvent(Point point)
+        {
+            this.clickedPoint = point;
+        }
+       
     }
 }

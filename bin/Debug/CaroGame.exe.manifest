@@ -43,14 +43,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="CaroGame.exe" size="796160">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="CaroGame.exe" size="828416">
       <assemblyIdentity name="CaroGame" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>Y9UfK17FcL4Eo0Rphu9EYSmGVESb6Y6PL34ukruoDco=</dsig:DigestValue>
+        <dsig:DigestValue>lyvs3nRkQOILaNI9kmW1dThbh4kt2LgSx8IUVFzuXSc=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
